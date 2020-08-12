@@ -30,7 +30,7 @@ class App extends Component{
 
   handleDelete = (id) =>{
     items = this.state.items.filter((item) =>{
-      return item.id != id;
+      return item.id !== id;
     });
     this.setState({
       items
@@ -51,7 +51,13 @@ class App extends Component{
   
   }
 
+  handleSubmit = (task) =>{
+    items.push(task);
 
+    this.setState({
+      isShowForm:false
+    })
+  }
 
   render(){
     
@@ -66,7 +72,8 @@ class App extends Component{
         orderDir={this.state.orderDir}
         handleSort={this.handleSort}></Control>
 
-        {this.state.isShowForm?<Form handleToggleForm={this.handleToggleForm}></Form>:null}
+        {this.state.isShowForm?<Form handleToggleForm={this.handleToggleForm} 
+        handleSubmit={this.handleSubmit}></Form>:null}
 
         <List items={this.state.items} handleDelete={this.handleDelete}></List>
       </div>
