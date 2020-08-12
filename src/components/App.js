@@ -7,8 +7,11 @@ import List from './List';
 import {orderBy as sort} from 'lodash';
 import {v4} from 'uuid';
 
-let {items} = require('../mocks/task');
-
+let items = JSON.parse(localStorage.getItem('items'));
+if(items === null){
+  items = require('../mocks/task').items ;
+  localStorage.setItem('items', JSON.stringify(items));
+}
 
 class App extends Component{
   constructor(props) {
@@ -19,7 +22,7 @@ class App extends Component{
       orderBy: 'name',
       orderDir: 'asc',
       itemSelected: null,
-    }
+    };
   }
 
   handleSearch = (str)=>{
@@ -37,6 +40,7 @@ class App extends Component{
     this.setState({
       items
     })
+    localStorage.setItem('items', JSON.stringify(items));
   }
 
   handleToggleForm = () =>{
@@ -67,6 +71,7 @@ class App extends Component{
       });
     }
 
+    localStorage.setItem('items', JSON.stringify(items));
     this.setState({
       isShowForm:false
     })
