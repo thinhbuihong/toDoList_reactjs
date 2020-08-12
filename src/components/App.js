@@ -4,9 +4,9 @@ import Title from "./Title";
 import Control from "./Control";
 import Form from './Form';
 import List from './List';
-import {items} from '../mocks/task';
 import {orderBy as sort} from 'lodash';
 
+let {items} = require('../mocks/task');
 
 
 class App extends Component{
@@ -28,6 +28,15 @@ class App extends Component{
     })
   }
 
+  handleDelete = (id) =>{
+    items = this.state.items.filter((item) =>{
+      return item.id != id;
+    });
+    this.setState({
+      items
+    })
+  }
+
   handleToggleForm = () =>{
     this.setState({
       isShowForm: !this.state.isShowForm
@@ -41,6 +50,7 @@ class App extends Component{
     })
   
   }
+
 
 
   render(){
@@ -58,7 +68,7 @@ class App extends Component{
 
         {this.state.isShowForm?<Form handleToggleForm={this.handleToggleForm}></Form>:null}
 
-        <List items={this.state.items}></List>
+        <List items={this.state.items} handleDelete={this.handleDelete}></List>
       </div>
     );
     
