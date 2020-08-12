@@ -5,7 +5,9 @@ export default class List extends Component {
   render() {
     const items = this.props.items;
     const Items = items.map((item, i) =>{
-      return <Item key={i} item={item} index={i+1} handleDelete={this.props.handleDelete}></Item>
+      return <Item key={i} item={item} index={i+1} 
+      handleDelete={this.props.handleDelete}
+      handleEdit={this.props.handleEdit.bind(this, item)}></Item>
     })
     return (
       <div className="panel panel-success">

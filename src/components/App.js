@@ -5,6 +5,7 @@ import Control from "./Control";
 import Form from './Form';
 import List from './List';
 import {orderBy as sort} from 'lodash';
+import {v4} from 'uuid';
 
 let {items} = require('../mocks/task');
 
@@ -16,7 +17,8 @@ class App extends Component{
       items: items,
       isShowForm: false,
       orderBy: 'name',
-      orderDir: 'asc'
+      orderDir: 'asc',
+      itemSelected: null,
     }
   }
 
@@ -39,8 +41,9 @@ class App extends Component{
 
   handleToggleForm = () =>{
     this.setState({
-      isShowForm: !this.state.isShowForm
-    })
+      isShowForm: !this.state.isShowForm,
+      itemSelected: null,
+    });
   }
 
   handleSort = (orderBy, orderDir)=>{
@@ -52,12 +55,31 @@ class App extends Component{
   }
 
   handleSubmit = (task) =>{
-    items.push(task);
+    if(task.id === null){ //add new task
+      items.push({...task, id:v4()});
+    }else{ //edit task
+      items.map((item) =>{
+        if(item.id === task.id){
+          item.level = task.level;
+          item.name = task.name;
+        }
+        return '';
+      });
+    }
 
     this.setState({
       isShowForm:false
     })
   }
+
+  handleEdit = (item) =>{
+    this.setState({
+      itemSelected: item,
+      isShowForm:true
+    })
+  }
+
+  
 
   render(){
     
@@ -73,9 +95,10 @@ class App extends Component{
         handleSort={this.handleSort}></Control>
 
         {this.state.isShowForm?<Form handleToggleForm={this.handleToggleForm} 
-        handleSubmit={this.handleSubmit}></Form>:null}
+        handleSubmit={this.handleSubmit} itemSelected={this.state.itemSelected}></Form> : null}
 
-        <List items={this.state.items} handleDelete={this.handleDelete}></List>
+        <List items={this.state.items} handleDelete={this.handleDelete} 
+        handleEdit={this.handleEdit}></List>
       </div>
     );
     

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import {v4} from 'uuid';
 
 export default class Form extends Component {
   constructor(props) {
     super(props);
     this.state={
+      taskId:null,
       taskName:'',
       taskLevel:0,
     }
@@ -12,7 +12,7 @@ export default class Form extends Component {
   
   handleSubmit = (event) =>{
     this.props.handleSubmit({
-      id: v4(),
+      id: this.state.taskId,
       name: this.state.taskName,
       level: +this.state.taskLevel
     });
@@ -29,6 +29,27 @@ export default class Form extends Component {
     
   }
 
+  componentWillMount() {
+    let item = this.props.itemSelected;
+    this.updateItem(item);
+
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.updateItem(nextProps.itemSelected);
+  }
+  updateItem = (item)=>{
+    if(item !== null) {
+      this.setState({
+          taskId: item.id,
+          taskName: item.name,
+          taskLevel: item.level,
+      });
+    }
+  }
+  
+  
+
   render() {
     return (
       <div className="row mt-3">
@@ -36,7 +57,8 @@ export default class Form extends Component {
           <form onSubmit={this.handleSubmit} method="POST" className="form-inline">
             <div className="form-group">
               <label className="sr-only" >label</label>
-              <input type="text" className="form-control" name="taskName" placeholder="Task Name" onChange={this.handleChange}/>
+              <input type="text" className="form-control" name="taskName" placeholder="Task Name" 
+              value={this.state.taskName} onChange={this.handleChange}/>
             </div>
             <div className="form-group">
 
