@@ -7,34 +7,43 @@ import List from './List';
 import {orderBy as sort} from 'lodash';
 import {v4} from 'uuid';
 
-let items = JSON.parse(localStorage.getItem('items'));
-if(items === null){
-  items = require('../mocks/task').items ;
-  localStorage.setItem('items', JSON.stringify(items));
-}
 
 class App extends Component{
   constructor(props) {
     super(props);
     this.state={
-      items: items,
+      items: null,
       isShowForm: false,
       orderBy: 'name',
       orderDir: 'asc',
       itemSelected: null,
     };
   }
+  componentWillMount() {
+    let items = JSON.parse(localStorage.getItem('items'));
+    if(items === null){
+      items = require('../mocks/task').items ;
+      localStorage.setItem('items', JSON.stringify(items));
+    }
+
+    this.setState({
+      items,
+    });
+  }
+  
 
   handleSearch = (str)=>{
+    let items = JSON.parse(localStorage.getItem('items')).filter((item) =>{
+      return item.name.includes(str);
+    });
+    
     this.setState({
-      items: items.filter((item) =>{
-        return item.name.includes(str);
-      })
+      items,  
     })
   }
 
   handleDelete = (id) =>{
-    items = this.state.items.filter((item) =>{
+    let items = this.state.items.filter((item) =>{
       return item.id !== id;
     });
     this.setState({
@@ -59,15 +68,23 @@ class App extends Component{
   }
 
   handleSubmit = (task) =>{
+    let items = this.state.items;
     if(task.id === null){ //add new task
       items.push({...task, id:v4()});
-    }else{ //edit task
+      this.setState({
+        items
+      });  
+    }else{
+       //edit task
       items.map((item) =>{
         if(item.id === task.id){
           item.level = task.level;
           item.name = task.name;
         }
         return '';
+      });
+      this.setState({
+        items
       });
     }
 
